@@ -1,17 +1,62 @@
 [
   {
+    "moduleId": "zygisksu",
+    "moduleName": "NeoZygisk",
+    "authors": [
+      {
+        "name": "JingMatrix",
+        "link": "https://github.com/JingMatrix"
+      }
+    ],
+    "summary": "Zygote injection with ptrace",
+    "stargazerCount": 2064,
     "latestRelease": {
-      "downloadUrl": "https://github.com/JingMatrix/NeoZygisk/releases/download/v2.3/NeoZygisk-v2.3-275-release.zip"
-    }
+      "name": "v2.3 (275-671937c-release)",
+      "time": "2026-02-14",
+      "downloadUrl": "https://ghfast.top/https://github.com/JingMatrix/NeoZygisk/releases/download/v2.3/NeoZygisk-v2.3-275-release.zip",
+      "size": 3208704,
+      "downloadCount": 37320
+    },
+    "repoUrl": "https://github.com/JingMatrix/NeoZygisk"
   },
   {
+    "moduleId": "zygisk_vector",
+    "moduleName": "Vector",
+    "authors": [
+      {
+        "name": "JingMatrix",
+        "link": "https://github.com/JingMatrix"
+      }
+    ],
+    "summary": "Modern Xposed Framework",
+    "stargazerCount": 11785,
     "latestRelease": {
-      "downloadUrl": "https://github.com/JingMatrix/Vector/releases/download/v2.0/Vector-v2.0-3021-Release.zip"
-    }
+      "name": "v2.0 (3021)",
+      "time": "2026-03-23",
+      "downloadUrl": "https://ghfast.top/https://github.com/JingMatrix/Vector/releases/download/v2.0/Vector-v2.0-3021-Release.zip",
+      "size": 8434264,
+      "downloadCount": 458054
+    },
+    "repoUrl": "https://github.com/JingMatrix/Vector"
   },
   {
+    "moduleId": "tricky_store",
+    "moduleName": "TEESimulator",
+    "authors": [
+      {
+        "name": "JingMatrix",
+        "link": "https://github.com/JingMatrix"
+      }
+    ],
+    "summary": "Software simulation for Android hardware-backed key pairs with key attestation",
+    "stargazerCount": 1943,
     "latestRelease": {
-      "downloadUrl": "https://github.com/JingMatrix/TEESimulator/releases/download/v3.2/TEESimulator-v3.2-67-Release.zip"
-    }
+      "name": "v3.2 (67-1f8412d-release)",
+      "time": "2026-03-07",
+      "downloadUrl": "https://ghfast.top/https://github.com/JingMatrix/TEESimulator/releases/download/v3.2/TEESimulator-v3.2-67-Release.zip",
+      "size": 1883723,
+      "downloadCount": 35341
+    },
+    "repoUrl": "https://github.com/JingMatrix/TEESimulator"
   }
 ]
