@@ -1,23 +1,86 @@
 [
   {
-    "moduleId": "meta-hybrid_mount",
+    "moduleId": "hybrid_mount",
     "moduleName": "Hybrid Mount",
     "authors": [
       {
-        "name": "Hybrid-Mount",
-        "link": "https://github.com/Hybrid-Mount/meta-hybrid_mount"
+        "name": "Hybrid Mount Developers",
+        "link": "https://github.com/Hybrid-Mount"
       }
     ],
-    "summary": "KernelSU/APatch 挂载编排元模块，统一 OverlayFS、Magic Mount 与 Kasumi 后端，并提供 WebUI 管理",
+    "summary": "Hybrid Mount Metamodule",
     "metamodule": true,
     "stargazerCount": 1315,
     "latestRelease": {
-      "name": "v4.2.0",
+      "name": "4.2.0-1815",
       "time": "2026-06-28",
       "downloadUrl": "https://ghfast.top/https://github.com/Hybrid-Mount/meta-hybrid_mount/releases/download/v4.2.0/Hybrid-Mount-4.2.0-1815.zip",
       "size": 2161504,
-      "downloadCount": 17581
+      "downloadCount": 17591
     },
     "repoUrl": "https://github.com/Hybrid-Mount/meta-hybrid_mount"
+  },
+  {
+    "moduleId": "meta-overlayfs",
+    "moduleName": "OverlayFS MetaModule",
+    "authors": [
+      {
+        "name": "KernelSU Developers",
+        "link": "https://github.com/KernelSU-Modules-Repo"
+      }
+    ],
+    "summary": "OverlayFS MetaModule",
+    "metamodule": true,
+    "stargazerCount": 418,
+    "latestRelease": {
+      "name": "1.3.1",
+      "time": "2025-12-02",
+      "downloadUrl": "https://ghfast.top/https://github.com/KernelSU-Modules-Repo/meta-overlayfs/releases/download/v1.3.1/meta-overlayfs-13100-1.3.1.zip",
+      "size": 451415,
+      "downloadCount": 58965
+    },
+    "repoUrl": "https://github.com/KernelSU-Modules-Repo/meta-overlayfs"
+  },
+  {
+    "moduleId": "magic_mount_rs",
+    "moduleName": "Magic Mount-rs",
+    "authors": [
+      {
+        "name": "mmrs developers",
+        "link": "https://github.com/Tools-cx-app"
+      }
+    ],
+    "summary": "An implementation of a metamodule using Magic Mount, Based on MKSU, Template is from meta-overlay.",
+    "metamodule": true,
+    "stargazerCount": 377,
+    "latestRelease": {
+      "name": "v4.0.5-821",
+      "time": "2026-07-13",
+      "downloadUrl": "https://ghfast.top/https://github.com/Tools-cx-app/meta-magic_mount-rs/releases/download/v4.0.5/magic_mount_rs-4.0.5-821-universal.zip",
+      "size": 3037245,
+      "downloadCount": 1938
+    },
+    "repoUrl": "https://github.com/Tools-cx-app/meta-magic_mount-rs"
+  },
+  {
+    "moduleId": "mountify",
+    "moduleName": "mountify",
+    "authors": [
+      {
+        "name": "xx, KOWX712",
+        "link": "https://github.com/backslashxx"
+      }
+    ],
+    "summary": "Globally mounted modules via OverlayFS.",
+    "metamodule": true,
+    "stargazerCount": 1187,
+    "latestRelease": {
+      "name": "v2.0.3",
+      "time": "2026-06-25",
+      "downloadUrl": "https://ghfast.top/https://github.com/backslashxx/mountify/releases/download/203/mountify.zip",
+      "size": 555271,
+      "downloadCount": 14107
+    },
+    "repoUrl": "https://github.com/backslashxx/mountify"
   }
 ]
