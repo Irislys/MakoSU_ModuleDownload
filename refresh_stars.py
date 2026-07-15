@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh modules.json stars, release dates, size and download counts from GitHub."""
+"""Refresh modules.json stars, release time, size and download counts from GitHub."""
 
 from __future__ import annotations
 
@@ -95,7 +95,6 @@ def find_asset(release: dict, asset_name: str) -> dict | None:
     for asset in assets:
         if asset.get("name") == asset_name:
             return asset
-    # fallback: browser_download_url ends with asset name
     for asset in assets:
         url = asset.get("browser_download_url") or ""
         if url.endswith("/" + asset_name) or unquote(url).endswith("/" + asset_name):
@@ -112,6 +111,10 @@ def main() -> int:
 
     for module in modules:
         name = module.get("moduleName") or module.get("moduleId") or "?"
+        # Drop legacy fields if present
+        module.pop("updatedAt", None)
+        module.pop("createdAt", None)
+
         repo_url = (module.get("repoUrl") or "").strip()
         if repo_url:
             full_name = full_name_from_repo_url(repo_url)
@@ -151,7 +154,10 @@ def main() -> int:
             published = format_release_date(
                 data.get("published_at") or data.get("created_at") or ""
             )
-            print(f"[{full_name}@{tag}] published={published or '?'} assets={len(data.get('assets') or [])}")
+            print(
+                f"[{full_name}@{tag}] published={published or '?'} "
+                f"assets={len(data.get('assets') or [])}"
+            )
 
     changed = 0
     for module in modules:
@@ -162,7 +168,7 @@ def main() -> int:
         if repo_url and repo_url in stars_by_repo_url:
             stars = stars_by_repo_url[repo_url]
             if stars is not None:
-                old_stars = int(module.get("stargazerCount") or module.get("stars") or 0)
+                old_stars = int(module.get("stargazerCount") or 0)
                 module["stargazerCount"] = stars
                 if old_stars != stars:
                     changes.append(f"stargazerCount {old_stars}->{stars}")
@@ -175,20 +181,16 @@ def main() -> int:
                 release_date = format_release_date(
                     release.get("published_at") or release.get("created_at") or ""
                 )
-                if release_date:
-                    old_date = (module.get("updatedAt") or "").strip()
-                    module["updatedAt"] = release_date
-                    if not (module.get("createdAt") or "").strip():
-                        module["createdAt"] = release_date
-                    if old_date != release_date:
-                        changes.append(f"updatedAt {old_date or '?'}->{release_date}")
-
                 lr = module.get("latestRelease")
                 if not isinstance(lr, dict):
                     lr = {}
                     module["latestRelease"] = lr
+
                 if release_date:
+                    old_time = (lr.get("time") or "").strip()
                     lr["time"] = release_date
+                    if old_time != release_date:
+                        changes.append(f"time {old_time or '?'}->{release_date}")
 
                 asset = find_asset(release, asset_name)
                 if asset:

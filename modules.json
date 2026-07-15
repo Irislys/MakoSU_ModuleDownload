@@ -11,8 +11,6 @@
     "summary": "基于 OverlayFS 的系统模块挂载方案，支持模块化挂载系统文件",
     "metamodule": false,
     "stargazerCount": 0,
-    "updatedAt": "2026-06-28",
-    "createdAt": "2026-06-28",
     "latestRelease": {
       "name": "7",
       "time": "2026-06-28",
@@ -35,15 +33,13 @@
     "summary": "Xposed 框架的 LSPosed 实现，支持 Android 8.1-15+",
     "metamodule": false,
     "stargazerCount": 0,
-    "updatedAt": "2025-12-18",
-    "createdAt": "2025-12-18",
     "latestRelease": {
       "name": "2",
       "time": "2025-12-18",
       "downloadUrl": "https://github.com/3093750973/APM-FB/releases/download/2/LSPosed-v2.1.0-7769-release.zip",
       "versionCode": 0,
       "size": 6013598,
-      "downloadCount": 964
+      "downloadCount": 965
     },
     "repoUrl": "https://github.com/3093750973/APM-FB"
   },
@@ -59,8 +55,6 @@
     "summary": "现代 Android 超级用户接口，Zygisk 版本，支持 KernelSU/APatch/FolkPatch",
     "metamodule": false,
     "stargazerCount": 17,
-    "updatedAt": "2025-12-01",
-    "createdAt": "2025-12-01",
     "latestRelease": {
       "name": "zygisk",
       "time": "2025-12-01",
@@ -83,8 +77,6 @@
     "summary": "Magic Mount 元模块，用于 FolkPatch 的系统文件覆盖挂载",
     "metamodule": false,
     "stargazerCount": 17,
-    "updatedAt": "2026-01-12",
-    "createdAt": "2026-01-12",
     "latestRelease": {
       "name": "meta",
       "time": "2026-01-12",
@@ -107,8 +99,6 @@
     "summary": "新一代 Zygisk 实现，支持 KernelSU/APatch/FolkPatch",
     "metamodule": false,
     "stargazerCount": 9947,
-    "updatedAt": "2026-06-22",
-    "createdAt": "2026-06-22",
     "latestRelease": {
       "name": "v1.4.2",
       "time": "2026-06-22",
@@ -131,15 +121,13 @@
     "summary": "修改 Android 密钥库，实现 TEE 模拟，配合 PlayIntegrityFix 使用",
     "metamodule": false,
     "stargazerCount": 6156,
-    "updatedAt": "2025-11-02",
-    "createdAt": "2025-11-02",
     "latestRelease": {
       "name": "1.4.1",
       "time": "2025-11-02",
       "downloadUrl": "https://github.com/5ec1cff/TrickyStore/releases/download/1.4.1/Tricky-Store-v1.4.1-245-72b2e84-release.zip",
       "versionCode": 0,
       "size": 2840600,
-      "downloadCount": 768680
+      "downloadCount": 768687
     },
     "repoUrl": "https://github.com/5ec1cff/TrickyStore"
   },
@@ -155,15 +143,13 @@
     "summary": "Zygisk 助手，自动管理需要 ROOT 的应用列表",
     "metamodule": false,
     "stargazerCount": 2521,
-    "updatedAt": "2025-02-23",
-    "createdAt": "2025-02-23",
     "latestRelease": {
       "name": "v2.1.4",
       "time": "2025-02-23",
       "downloadUrl": "https://github.com/snake-4/Zygisk-Assistant/releases/download/v2.1.4/Zygisk-Assistant-v2.1.4-1013f8a-release.zip",
       "versionCode": 0,
       "size": 392961,
-      "downloadCount": 225854
+      "downloadCount": 225859
     },
     "repoUrl": "https://github.com/snake-4/Zygisk-Assistant"
   },
@@ -179,8 +165,6 @@
     "summary": "从 Google Play 商店脱离应用自动更新",
     "metamodule": false,
     "stargazerCount": 2051,
-    "updatedAt": "2026-04-07",
-    "createdAt": "2026-04-07",
     "latestRelease": {
       "name": "v1.23.1",
       "time": "2026-04-07",
@@ -203,15 +187,13 @@
     "summary": "LSPosed 修改版，支持 Android 12-15+",
     "metamodule": false,
     "stargazerCount": 4322,
-    "updatedAt": "2024-03-08",
-    "createdAt": "2024-03-08",
     "latestRelease": {
       "name": "v1.9.3_mod",
       "time": "2024-03-08",
       "downloadUrl": "https://github.com/mywalkb/LSPosed_mod/releases/download/v1.9.3_mod/LSPosed-v1.9.3_mod-7244-zygisk-release.zip",
       "versionCode": 0,
       "size": 2630291,
-      "downloadCount": 1533630
+      "downloadCount": 1533632
     },
     "repoUrl": "https://github.com/mywalkb/LSPosed_mod"
   },
@@ -227,8 +209,6 @@
     "summary": "隐藏 Zygisk 痕迹，绕过银行/支付应用 ROOT 检测",
     "metamodule": false,
     "stargazerCount": 6271,
-    "updatedAt": "2025-06-18",
-    "createdAt": "2025-06-18",
     "latestRelease": {
       "name": "shamiko-414",
       "time": "2025-06-18",
