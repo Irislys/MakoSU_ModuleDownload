@@ -35,6 +35,11 @@ def version_code(value: str) -> str:
     return matches[-1] if matches else "0"
 
 
+def release_tag(url: str, fallback: str) -> str:
+    match = re.search(r"/releases/download/([^/]+)/", url or "")
+    return unquote(match.group(1)) if match else fallback
+
+
 def asset_from_release(release: dict, module_id: str) -> dict:
     url = direct_url(release.get("downloadUrl", ""))
     name = unquote(url.rsplit("/", 1)[-1]) or f"{module_id}.zip"
@@ -65,7 +70,7 @@ def normalize_module(module: dict) -> tuple[dict, dict]:
     repo_url = str(module.get("repoUrl", "")).strip()
     readme, readme_html = render_readme(module)
     asset = asset_from_release(release, module_id)
-    tag = f"v{version_code(name)}"
+    tag = release_tag(asset["downloadUrl"], f"v{version_code(name)}")
     if repo_url and "/releases/" not in repo_url:
         release_url = f"{repo_url.rstrip('/')}/releases/tag/{tag}"
     else:

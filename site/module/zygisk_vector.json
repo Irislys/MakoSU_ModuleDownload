@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "v2.0 (3021)",
-      "url": "https://github.com/JingMatrix/Vector/releases/tag/v3021",
+      "url": "https://github.com/JingMatrix/Vector/releases/tag/v2.0",
       "descriptionHTML": "<p>Modern Xposed Framework</p>",
       "createdAt": "2026-03-23T00:00:00Z",
       "publishedAt": "2026-03-23T00:00:00Z",
       "updatedAt": "2026-03-23T00:00:00Z",
-      "tagName": "v3021",
+      "tagName": "v2.0",
       "isPrerelease": false,
       "releaseAssets": [
         {

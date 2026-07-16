@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "v3.2 (67-1f8412d-release)",
-      "url": "https://github.com/JingMatrix/TEESimulator/releases/tag/v8412",
+      "url": "https://github.com/JingMatrix/TEESimulator/releases/tag/v3.2",
       "descriptionHTML": "<p>Software simulation for Android hardware-backed key pairs with key attestation</p>",
       "createdAt": "2026-03-07T00:00:00Z",
       "publishedAt": "2026-03-07T00:00:00Z",
       "updatedAt": "2026-03-07T00:00:00Z",
-      "tagName": "v8412",
+      "tagName": "v3.2",
       "isPrerelease": false,
       "releaseAssets": [
         {

@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "4.2.0-1815",
-      "url": "https://github.com/Hybrid-Mount/meta-hybrid_mount/releases/tag/v1815",
+      "url": "https://github.com/Hybrid-Mount/meta-hybrid_mount/releases/tag/v4.2.0",
       "descriptionHTML": "<p>Hybrid Mount Metamodule</p>",
       "createdAt": "2026-06-28T00:00:00Z",
       "publishedAt": "2026-06-28T00:00:00Z",
       "updatedAt": "2026-06-28T00:00:00Z",
-      "tagName": "v1815",
+      "tagName": "v4.2.0",
       "isPrerelease": false,
       "releaseAssets": [
         {

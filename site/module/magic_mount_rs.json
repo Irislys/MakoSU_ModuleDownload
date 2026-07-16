@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "v4.0.5-821",
-      "url": "https://github.com/Tools-cx-app/meta-magic_mount-rs/releases/tag/v821",
+      "url": "https://github.com/Tools-cx-app/meta-magic_mount-rs/releases/tag/v4.0.5",
       "descriptionHTML": "<p>An implementation of a metamodule using Magic Mount, Based on MKSU, Template is from meta-overlay.</p>",
       "createdAt": "2026-07-13T00:00:00Z",
       "publishedAt": "2026-07-13T00:00:00Z",
       "updatedAt": "2026-07-13T00:00:00Z",
-      "tagName": "v821",
+      "tagName": "v4.0.5",
       "isPrerelease": false,
       "releaseAssets": [
         {

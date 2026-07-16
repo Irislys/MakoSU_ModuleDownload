@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "v2.0.3",
-      "url": "https://github.com/backslashxx/mountify/releases/tag/v3",
+      "url": "https://github.com/backslashxx/mountify/releases/tag/203",
       "descriptionHTML": "<p>Globally mounted modules via OverlayFS.</p>",
       "createdAt": "2026-06-25T00:00:00Z",
       "publishedAt": "2026-06-25T00:00:00Z",
       "updatedAt": "2026-06-25T00:00:00Z",
-      "tagName": "v3",
+      "tagName": "203",
       "isPrerelease": false,
       "releaseAssets": [
         {

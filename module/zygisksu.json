@@ -25,12 +25,12 @@
   "releases": [
     {
       "name": "v2.3 (275-671937c-release)",
-      "url": "https://github.com/JingMatrix/NeoZygisk/releases/tag/v671937",
+      "url": "https://github.com/JingMatrix/NeoZygisk/releases/tag/v2.3",
       "descriptionHTML": "<p>Zygote injection with ptrace</p>",
       "createdAt": "2026-02-14T00:00:00Z",
       "publishedAt": "2026-02-14T00:00:00Z",
       "updatedAt": "2026-02-14T00:00:00Z",
-      "tagName": "v671937",
+      "tagName": "v2.3",
       "isPrerelease": false,
       "releaseAssets": [
         {
