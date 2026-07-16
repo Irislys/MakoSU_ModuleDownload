@@ -23,6 +23,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/normalize_catalog.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: python scripts/validate_catalog.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

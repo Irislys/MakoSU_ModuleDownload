@@ -3,17 +3,24 @@
 
 from __future__ import annotations
 
+import base64
 import html
 import json
+import os
 import re
+import sys
+import time
+from urllib.parse import quote, unquote, urljoin, urlparse
+from urllib.request import Request, urlopen
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULES_FILE = ROOT / "modules.json"
 DETAIL_DIR = ROOT / "module"
 SITE_DIR = ROOT / "site"
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
+GITHUB_API = "https://api.github.com"
 
 
 def direct_url(url: str) -> str:
@@ -40,6 +47,146 @@ def release_tag(url: str, fallback: str) -> str:
     return unquote(match.group(1)) if match else fallback
 
 
+def github_request(path: str, method: str = "GET", payload: dict | None = None) -> bytes | None:
+    body = None
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "MakoSU-ModuleProxy/1.0",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if payload is not None:
+        body = json.dumps(payload).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    request = Request(
+        f"{GITHUB_API}{path}",
+        data=body,
+        headers=headers,
+        method=method,
+    )
+    if GITHUB_TOKEN:
+        request.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
+    for attempt in range(3):
+        try:
+            with urlopen(request, timeout=30) as response:
+                return response.read()
+        except Exception as error:  # noqa: BLE001
+            if attempt == 2:
+                print(f"GitHub API unavailable for {path}: {error}", file=sys.stderr)
+            else:
+                time.sleep(2 ** attempt)
+    return None
+
+
+def github_api(path: str) -> dict | list | None:
+    response = github_request(path)
+    if response is None:
+        return None
+    try:
+        return json.loads(response)
+    except json.JSONDecodeError:
+        return None
+
+
+def github_markdown(markdown: str, context: str | None) -> str | None:
+    if not markdown.strip():
+        return ""
+    payload = {"text": markdown, "mode": "gfm"}
+    if context:
+        payload["context"] = context
+    response = github_request("/markdown", method="POST", payload=payload)
+    if response is None:
+        return None
+    return response.decode("utf-8")
+
+
+def repo_name(repo_url: str) -> str | None:
+    parsed = urlparse(repo_url)
+    if parsed.netloc.lower() != "github.com":
+        return None
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) != 2:
+        return None
+    return f"{parts[0]}/{parts[1].removesuffix('.git')}"
+
+
+def inline_markdown(value: str) -> str:
+    escaped = html.escape(value, quote=True)
+    escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
+    escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"__([^_]+)__", r"<strong>\1</strong>", escaped)
+    escaped = re.sub(r"\*([^*]+)\*", r"<em>\1</em>", escaped)
+    escaped = re.sub(r"_([^_]+)_", r"<em>\1</em>", escaped)
+    return re.sub(r"\[([^]]+)\]\((https?://[^ )]+)\)", r'<a href="\2">\1</a>', escaped)
+
+
+def markdown_to_html(markdown: str) -> str:
+    lines = (markdown or "").replace("\r\n", "\n").split("\n")
+    output: list[str] = []
+    paragraph: list[str] = []
+    list_items: list[str] = []
+    code_lines: list[str] = []
+    in_code = False
+
+    def flush_paragraph() -> None:
+        if paragraph:
+            output.append(f"<p>{'<br>\n'.join(paragraph)}</p>")
+            paragraph.clear()
+
+    def flush_list() -> None:
+        if list_items:
+            output.append(f"<ul>{''.join(f'<li>{item}</li>' for item in list_items)}</ul>")
+            list_items.clear()
+
+    for line in lines:
+        if line.strip().startswith("```"):
+            flush_paragraph()
+            flush_list()
+            if in_code:
+                output.append(f"<pre><code>{html.escape(chr(10).join(code_lines))}</code></pre>")
+                code_lines.clear()
+            in_code = not in_code
+            continue
+        if in_code:
+            code_lines.append(line)
+            continue
+        stripped = line.strip()
+        if not stripped:
+            flush_paragraph()
+            flush_list()
+            continue
+        heading = re.match(r"^(#{1,6})\s+(.+)$", stripped)
+        if heading:
+            flush_paragraph()
+            flush_list()
+            level = len(heading.group(1))
+            output.append(f"<h{level}>{inline_markdown(heading.group(2))}</h{level}>")
+            continue
+        if re.match(r"^[-*_]{3,}$", stripped):
+            flush_paragraph()
+            flush_list()
+            output.append("<hr>")
+            continue
+        bullet = re.match(r"^[-*+]\s+(.+)$", stripped)
+        if bullet:
+            flush_paragraph()
+            list_items.append(inline_markdown(bullet.group(1)))
+            continue
+        if list_items:
+            flush_list()
+        quote_line = re.match(r"^>\s?(.*)$", stripped)
+        if quote_line:
+            flush_paragraph()
+            output.append(f"<blockquote><p>{inline_markdown(quote_line.group(1))}</p></blockquote>")
+            continue
+        paragraph.append(inline_markdown(stripped))
+
+    if in_code:
+        output.append(f"<pre><code>{html.escape(chr(10).join(code_lines))}</code></pre>")
+    flush_paragraph()
+    flush_list()
+    return "\n".join(output)
+
+
 def asset_from_release(release: dict, module_id: str) -> dict:
     url = direct_url(release.get("downloadUrl", ""))
     name = unquote(url.rsplit("/", 1)[-1]) or f"{module_id}.zip"
@@ -52,12 +199,80 @@ def asset_from_release(release: dict, module_id: str) -> dict:
     }
 
 
-def render_readme(module: dict) -> tuple[str, str]:
-    name = html.escape(str(module.get("moduleName", "")))
-    summary = html.escape(str(module.get("summary", "")))
+def fallback_readme(module: dict) -> tuple[str, str]:
     markdown = f"# {module.get('moduleName', '')}\n\n{module.get('summary', '')}\n"
-    rendered = f"<h1>{name}</h1>\n<p>{summary}</p>"
-    return markdown, rendered
+    return markdown, markdown_to_html(markdown)
+
+
+def absolutize_readme_links(rendered: str, readme: dict) -> str:
+    raw_base = str(readme.get("download_url") or "")
+    html_base = str(readme.get("html_url") or "")
+    if not raw_base and not html_base:
+        return rendered
+
+    def replace_src(match: re.Match[str]) -> str:
+        return f'{match.group(1)}{urljoin(raw_base, match.group(2))}{match.group(3)}'
+
+    def replace_href(match: re.Match[str]) -> str:
+        value = match.group(2)
+        if value.startswith(("#", "data:", "http:", "https:", "mailto:")):
+            return match.group(0)
+        return f'{match.group(1)}{urljoin(html_base, value)}{match.group(3)}'
+
+    rendered = re.sub(r'(<img[^>]+\ssrc=")([^"]+)(")', replace_src, rendered, flags=re.IGNORECASE)
+    return re.sub(r'(<a[^>]+\shref=")([^"]+)(")', replace_href, rendered, flags=re.IGNORECASE)
+
+
+def render_readme(module: dict, full_repo: str | None) -> tuple[str, str]:
+    if full_repo:
+        for path in ("README.md", "docs/README.md", "docs/README_en.md"):
+            readme = github_api(f"/repos/{full_repo}/contents/{quote(path, safe='/')}")
+            if not readme or not readme.get("content"):
+                continue
+            try:
+                markdown = base64.b64decode(readme["content"]).decode("utf-8")
+            except (ValueError, UnicodeDecodeError):
+                continue
+            rendered = github_markdown(markdown, full_repo) or markdown_to_html(markdown)
+            rendered = absolutize_readme_links(rendered, readme)
+            return markdown, rendered
+    return fallback_readme(module)
+
+
+def asset_from_github(asset: dict) -> dict:
+    return {
+        "name": str(asset.get("name", "")),
+        "contentType": str(asset.get("content_type", "application/octet-stream")),
+        "downloadUrl": direct_url(str(asset.get("browser_download_url", ""))),
+        "downloadCount": int(asset.get("download_count", 0) or 0),
+        "size": int(asset.get("size", 0) or 0),
+    }
+
+
+def release_from_github(full_repo: str | None, tag: str, fallback: dict, summary: str) -> dict:
+    if not full_repo:
+        return fallback
+    encoded_tag = quote(tag, safe="")
+    remote = github_api(f"/repos/{full_repo}/releases/tags/{encoded_tag}")
+    if not remote:
+        return fallback
+    assets = [asset_from_github(asset) for asset in remote.get("assets", [])]
+    assets = [asset for asset in assets if asset["name"] and asset["downloadUrl"]]
+    body = str(remote.get("body") or "").strip()
+    rendered_body = github_markdown(body, full_repo) if body else None
+    return {
+        "name": fallback["name"],
+        "url": str(remote.get("html_url") or fallback["url"]),
+        "descriptionHTML": rendered_body or (markdown_to_html(body) if body else f"<p>{html.escape(summary)}</p>"),
+        "createdAt": iso_date(str(remote.get("created_at") or fallback["createdAt"])),
+        "publishedAt": iso_date(str(remote.get("published_at") or fallback["publishedAt"])),
+        "updatedAt": iso_date(str(remote.get("updated_at") or fallback["updatedAt"])),
+        "tagName": str(remote.get("tag_name") or fallback["tagName"]),
+        "isPrerelease": bool(remote.get("prerelease", fallback["isPrerelease"])),
+        "releaseAssets": assets or fallback["releaseAssets"],
+        "version": fallback["version"],
+        "versionCode": fallback["versionCode"],
+    }
 
 
 def normalize_module(module: dict) -> tuple[dict, dict]:
@@ -68,7 +283,8 @@ def normalize_module(module: dict) -> tuple[dict, dict]:
     name = str(release.get("name") or release.get("version") or module_id)
     release_time = iso_date(str(release.get("time", "")))
     repo_url = str(module.get("repoUrl", "")).strip()
-    readme, readme_html = render_readme(module)
+    full_repo = repo_name(repo_url)
+    readme, readme_html = render_readme(module, full_repo)
     asset = asset_from_release(release, module_id)
     tag = release_tag(asset["downloadUrl"], f"v{version_code(name)}")
     if repo_url and "/releases/" not in repo_url:
@@ -89,6 +305,11 @@ def normalize_module(module: dict) -> tuple[dict, dict]:
         "version": name,
         "versionCode": version_code(name),
     }
+    detail_release = release_from_github(full_repo, tag, detail_release, str(module.get("summary", "")))
+    latest_asset = next(
+        (item for item in detail_release["releaseAssets"] if item["name"] == asset["name"]),
+        detail_release["releaseAssets"][0] if detail_release["releaseAssets"] else asset,
+    )
 
     common = {
         "moduleId": module_id,
@@ -102,10 +323,12 @@ def normalize_module(module: dict) -> tuple[dict, dict]:
         "repoUrl": repo_url,
         "latestRelease": {
             "name": name,
-            "time": release_time,
+            "time": detail_release["publishedAt"],
             "version": name,
             "versionCode": version_code(name),
-            "downloadUrl": asset["downloadUrl"],
+            "downloadUrl": latest_asset["downloadUrl"],
+            "downloadCount": latest_asset["downloadCount"],
+            "size": latest_asset["size"],
         },
     }
     detail = {
@@ -147,7 +370,7 @@ def generate_site(catalog: list[dict], details: list[dict]) -> None:
     write_json(SITE_DIR / "modules.json", catalog)
     for detail in details:
         write_json(SITE_DIR / "module" / f"{detail['moduleId']}.json", detail)
-    page_script = """
+    page_script = r"""
 const root = document.querySelector('#app');
 const id = location.pathname.match(/module\/([^/]+)\/?$/)?.[1];
 const esc = value => String(value ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
